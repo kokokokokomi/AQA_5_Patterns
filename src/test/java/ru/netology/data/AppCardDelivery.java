@@ -64,6 +64,16 @@ public class AppCardDelivery {
         successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + dateField.getValue()));
     }
 
+    public void sendReplanWithCalendarRequest() {
+        dateField.click();
+        $(".calendar__arrow_direction_right[data-step='1']").click();
+        $$("td.calendar__day").find(text("1")).click();
+        planButton.click();
+        replanButton.click();
+        successMessage.waitUntil(visible, 5000);
+        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + dateField.getValue()));
+    }
+
     public void findSuccessMessage() {
         successMessage.waitUntil(visible, 5000);
         successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + dateField.getValue()));

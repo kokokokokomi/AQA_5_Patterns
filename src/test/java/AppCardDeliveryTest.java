@@ -14,6 +14,14 @@ public class AppCardDeliveryTest {
     }
 
     @Test
+    void shouldConfirmReplanWithCalendarRequest() {
+        cardDelivery.openBrowser();
+        cardDelivery.sendAllFieldsFilledRequest();
+        cardDelivery.findSuccessMessage();
+        cardDelivery.sendReplanWithCalendarRequest();
+    }
+
+    @Test
     void shouldConfirmSpecialNameRequest() {
         cardDelivery.openBrowser();
         cardDelivery.sendSpecialNameRequest();
