@@ -5,6 +5,9 @@ import ru.netology.data.AppRegistration;
 
 import com.codeborne.selenide.SelenideElement;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
@@ -21,6 +24,10 @@ public class AppCardDelivery {
     private SelenideElement replanButton = $$("button").find(exactText("Перепланировать"));
     private SelenideElement successMessage = $(withText("Успешно!"));
     private SelenideElement successNotificationContent = $("[data-test-id=success-notification] .notification__content");
+    private SelenideElement calendarSeekNextMonth = $(".calendar__arrow_direction_right[data-step='1']");
+    private SelenideElement calendarSeekProperDay = $$("td.calendar__day").find(text("11"));
+
+    String dateMeetingForCalendar = LocalDate.ofYearDay(2021, 11).format(DateTimeFormatter.ofPattern("dd.MM.YYYY"));
 
     public void openBrowser() { open("http://localhost:9999"); }
 
@@ -66,12 +73,12 @@ public class AppCardDelivery {
 
     public void sendReplanWithCalendarRequest() {
         dateField.click();
-        $(".calendar__arrow_direction_right[data-step='1']").click();
-        $$("td.calendar__day").find(text("1")).click();
+        calendarSeekNextMonth.click();
+        calendarSeekProperDay.click();
         planButton.click();
         replanButton.click();
         successMessage.waitUntil(visible, 5000);
-        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + dateField.getValue()));
+        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + dateMeetingForCalendar));
     }
 
     public void findSuccessMessage() {
