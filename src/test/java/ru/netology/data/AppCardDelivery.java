@@ -64,11 +64,11 @@ public class AppCardDelivery {
 
     public void sendReplanRequest() {
         dateField.doubleClick().sendKeys(BACK_SPACE);
-        dateField.setValue(DataGenerator.generateNewApp().getDate());
+        dateField.setValue("11.01.2021");
         planButton.click();
         replanButton.click();
         successMessage.waitUntil(visible, 5000);
-        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + dateField.getValue()));
+        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + dateMeetingForCalendar));
     }
 
     public void sendReplanWithCalendarRequest() {
@@ -83,7 +83,7 @@ public class AppCardDelivery {
 
     public void findSuccessMessage() {
         successMessage.waitUntil(visible, 5000);
-        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + dateField.getValue()));
+        successNotificationContent.shouldHave(text("Встреча успешно запланирована на "));
     }
 
     public void findRejectCityValueMessage() {
