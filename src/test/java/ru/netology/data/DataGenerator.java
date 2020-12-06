@@ -1,10 +1,8 @@
 package ru.netology.data;
 import com.github.javafaker.Faker;
-import com.github.javafaker.PhoneNumber;
 
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -36,12 +34,6 @@ public class DataGenerator {
                 //String.format(faker.phoneNumber().cellPhone(), "+7##########", "###########"));
     }
 
-    //public static AppRegistration generateNewSpecialDateApp() {
-    //    Faker faker = new Faker(new Locale("ru"));
-    //    return new AppRegistration(String.format(faker.address().cityName(), "Сыктывкар", "Анадырь", "Архангельск", "Москва"),
-    //            faker.name().name(),
-    //            faker.numerify("16.16.2220"));
-    //}
 
     public static String generateCardDeliveryDate() {
         LocalDate firstDate = LocalDate.now().plusDays(4);
@@ -53,5 +45,11 @@ public class DataGenerator {
         LocalDate secondDate = LocalDate.now().plusDays(5);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return secondDate.format(formatter);
+    }
+
+    public static String generateSpecialCardDeliveryDate() {
+        LocalDate specialDate = LocalDate.now().plusYears(400);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return specialDate.format(formatter);
     }
 }

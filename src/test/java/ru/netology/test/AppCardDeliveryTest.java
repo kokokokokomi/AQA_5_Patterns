@@ -122,6 +122,18 @@ public class AppCardDeliveryTest {
     void shouldNotConfirmWrongDateRequest() {
         cityField.setValue(DataGenerator.generateNewApp().getCity());
         dateField.doubleClick().sendKeys(BACK_SPACE);
+        dateField.setValue(DataGenerator.generateSpecialCardDeliveryDate());
+        personName.setValue(DataGenerator.generateNewApp().getName());
+        phoneNumber.setValue(DataGenerator.generateNewApp().getPhone());
+        agreementField.click();
+        planButton.click();
+        $(withText("Неверно введена дата")).waitUntil(visible, 5000);
+    }
+
+    @Test
+    void shouldNotConfirmWrongDateRequestV2() {
+        cityField.setValue(DataGenerator.generateNewApp().getCity());
+        dateField.doubleClick().sendKeys(BACK_SPACE);
         dateField.setValue("16.16.2220");
         personName.setValue(DataGenerator.generateNewApp().getName());
         phoneNumber.setValue(DataGenerator.generateNewApp().getPhone());
