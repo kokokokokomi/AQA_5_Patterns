@@ -8,13 +8,11 @@ import lombok.RequiredArgsConstructor;
 
 public class AppRegistration {
     private String city;
-    private String date;
     private String name;
     private String phone;
 
-    public AppRegistration(String city, String date, String name, String phone) {
+    public AppRegistration(String city, String name, String phone) {
         this.city = city;
-        this.date = date;
         this.name = name;
         this.phone = phone;
     }
