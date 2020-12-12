@@ -3,15 +3,10 @@ package ru.netology.test;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataGenerator;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.Month;
-import java.util.Random;
-
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selectors.byText;
@@ -29,116 +24,125 @@ public class AppCardDeliveryTest {
     private SelenideElement replanButton = $$("button").find(exactText("Перепланировать"));
     private SelenideElement successMessage = $(withText("Успешно!"));
     private SelenideElement successNotificationContent = $("[data-test-id=success-notification] .notification__content");
+    private SelenideElement calendarSeekNextMonth = $(".calendar__arrow_direction_right[data-step='1']");
     private ElementsCollection calendarDays = $$("td.calendar__day");
 
     @BeforeEach
-    void shouldOpenBrowser() { open("http://localhost:9999"); }
+    void shouldOpenBrowser() {
+        open("http://localhost:9999");
+    }
 
     @Test
     void shouldConfirmReplanRequest() {
-        cityField.setValue(DataGenerator.generateNewApp().getCity());
+        cityField.setValue(DataGenerator.Generate.generateCity());
         dateField.doubleClick().sendKeys(BACK_SPACE);
-        dateField.setValue(DataGenerator.generateCardDeliveryDate());
-        personName.setValue(DataGenerator.generateNewApp().getName());
-        phoneNumber.setValue(DataGenerator.generateNewApp().getPhone());
+        dateField.setValue(DataGenerator.Generate.generateCardDeliveryDate());
+        personName.setValue(DataGenerator.Generate.generateNewApp("ru").getName());
+        phoneNumber.setValue(DataGenerator.Generate.generateNewApp("ru").getPhone());
         agreementField.click();
         planButton.click();
         successMessage.waitUntil(visible, 5000);
-        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + DataGenerator.generateCardDeliveryDate()));
+        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + DataGenerator.Generate.generateCardDeliveryDate()));
         dateField.doubleClick().sendKeys(BACK_SPACE);
-        dateField.setValue(DataGenerator.generateNewCardDeliveryDate());
+        dateField.setValue(DataGenerator.Generate.generateNewCardDeliveryDate());
         planButton.click();
         replanButton.click();
         successMessage.waitUntil(visible, 5000);
-        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + DataGenerator.generateNewCardDeliveryDate()));
+        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + DataGenerator.Generate.generateNewCardDeliveryDate()));
     }
 
     @Test
     void shouldConfirmReplanWithCalendarRequest() {
-        LocalDate defaultCalendarDay = LocalDate.now().plusDays(4);
-        String seekingDefaultDay = String.valueOf(defaultCalendarDay.getDayOfMonth());
-        LocalDate meetingDay = LocalDate.now().plusDays(5);
-        String seekingReplanMeetingDay = String.valueOf(meetingDay.getDayOfMonth());
-        cityField.setValue(DataGenerator.generateNewApp().getCity());
+        cityField.setValue(DataGenerator.Generate.generateCity());
+        LocalDate firstMeetingCalendarDay = LocalDate.now().plusDays(3);
+        String seekingFirstDay = String.valueOf(firstMeetingCalendarDay.getDayOfMonth());
+        LocalDate secondMeetingCalendarDay = LocalDate.now().plusDays(30);
+        String seekingSecondDay = String.valueOf(secondMeetingCalendarDay.getDayOfMonth());
         dateField.click();
-        calendarDays.find(text(seekingDefaultDay)).click();
-        personName.setValue(DataGenerator.generateNewApp().getName());
-        phoneNumber.setValue(DataGenerator.generateNewApp().getPhone());
+        calendarDays.find(text(seekingFirstDay)).click();
+        personName.setValue(DataGenerator.Generate.generateNewApp("ru").getName());
+        phoneNumber.setValue(DataGenerator.Generate.generateNewApp("ru").getPhone());
         agreementField.click();
         planButton.click();
         successMessage.waitUntil(visible, 5000);
-        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + defaultCalendarDay.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
+        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + firstMeetingCalendarDay.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
         dateField.click();
-        calendarDays.find(text(seekingReplanMeetingDay)).click();
+        calendarDays.find(text(seekingFirstDay));
+        if ((secondMeetingCalendarDay.getYear() > firstMeetingCalendarDay.getYear()) |
+        (secondMeetingCalendarDay.getMonthValue() > firstMeetingCalendarDay.getMonthValue())) {
+            calendarSeekNextMonth.click();
+        }
+        calendarDays.find(text(seekingSecondDay)).click();
         planButton.click();
         replanButton.click();
         successMessage.waitUntil(visible, 5000);
-        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + meetingDay.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
+        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + secondMeetingCalendarDay.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
     }
 
-    @Test
-    void shouldConfirmSpecialNameRequest() {
-        cityField.setValue(DataGenerator.generateNewSpecialNameApp().getCity());
-        dateField.click();
-        dateField.setValue(DataGenerator.generateCardDeliveryDate());
-        personName.setValue(DataGenerator.generateNewSpecialNameApp().getName());
-        phoneNumber.setValue(DataGenerator.generateNewSpecialNameApp().getPhone());
-        agreementField.click();
-        planButton.click();
-        successMessage.waitUntil(visible, 5000);
-        successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + DataGenerator.generateCardDeliveryDate()));
-    }
+        @Test
+        void shouldConfirmSpecialNameRequest () {
+            cityField.setValue(DataGenerator.Generate.generateCity());
+            dateField.click();
+            dateField.setValue(DataGenerator.Generate.generateCardDeliveryDate());
+            personName.setValue(DataGenerator.Generate.generateSpecialName());
+            phoneNumber.setValue(DataGenerator.Generate.generateNewApp("ru").getPhone());
+            agreementField.click();
+            planButton.click();
+            successMessage.waitUntil(visible, 5000);
+            successNotificationContent.shouldHave(text("Встреча успешно запланирована на " + DataGenerator.Generate.generateCardDeliveryDate()));
+        }
 
-    @Test
-    void shouldNotConfirmWrongNameRequest() {
-        cityField.setValue(DataGenerator.generateNewApp().getCity());
-        personName.setValue(DataGenerator.generateNewRejectedApp().getName());
-        phoneNumber.setValue(DataGenerator.generateNewApp().getPhone());
-        agreementField.click();
-        planButton.click();
-        $(withText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(visible, 5000);
-    }
+        @Test
+        void shouldNotConfirmWrongNameRequest () {
+            cityField.setValue(DataGenerator.Generate.generateCity());
+            personName.setValue(DataGenerator.Generate.generateInvalidName());
+            phoneNumber.setValue(DataGenerator.Generate.generateNewApp("ru").getPhone());
+            agreementField.click();
+            planButton.click();
+            $(withText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(visible, 5000);
+        }
 
-    @Test
-    void shouldNotConfirmRequest() {
-        personName.setValue(DataGenerator.generateNewApp().getName());
-        phoneNumber.setValue(DataGenerator.generateNewApp().getPhone());
-        agreementField.click();
-        planButton.click();
-        $(withText("Поле обязательно для заполнения")).waitUntil(visible, 5000);
-    }
+        @Test
+        void shouldNotConfirmRequest () {
+            personName.setValue(DataGenerator.Generate.generateNewApp("ru").getName());
+            phoneNumber.setValue(DataGenerator.Generate.generateNewApp("ru").getPhone());
+            agreementField.click();
+            planButton.click();
+            $(withText("Поле обязательно для заполнения")).waitUntil(visible, 5000);
+        }
 
-    @Test
-    void shouldNotConfirmWrongDataRequest() {
-        cityField.setValue(DataGenerator.generateNewRejectedApp().getCity());
-        personName.setValue(DataGenerator.generateNewRejectedApp().getName());
-        phoneNumber.setValue(DataGenerator.generateNewRejectedApp().getPhone());
-        agreementField.click();
-        planButton.click();
-        $(byText("Доставка в выбранный город недоступна")).waitUntil(visible, 5000);
-    }
+        @Test
+        void shouldNotConfirmWrongDataRequest () {
+            cityField.setValue(DataGenerator.Generate.generateInvalidCity());
+            personName.setValue(DataGenerator.Generate.generateNewApp("ru").getName());
+            phoneNumber.setValue(DataGenerator.Generate.generateNewApp("ru").getPhone());
+            agreementField.click();
+            planButton.click();
+            $(byText("Доставка в выбранный город недоступна")).waitUntil(visible, 5000);
+        }
 
-    @Test
-    void shouldNotConfirmWrongDateRequest() {
-        cityField.setValue(DataGenerator.generateNewApp().getCity());
-        dateField.doubleClick().sendKeys(BACK_SPACE);
-        dateField.setValue(DataGenerator.generateSpecialCardDeliveryDate());
-        personName.setValue(DataGenerator.generateNewApp().getName());
-        phoneNumber.setValue(DataGenerator.generateNewApp().getPhone());
-        agreementField.click();
-        planButton.click();
-        $(withText("Неверно введена дата")).waitUntil(visible, 5000);
-    }
+        @Test
+        void shouldNotConfirmWrongDateRequest () {
+            cityField.setValue(DataGenerator.Generate.generateCity());
+            dateField.doubleClick().sendKeys(BACK_SPACE);
+            dateField.setValue(DataGenerator.Generate.generateSpecialCardDeliveryDate());
+            personName.setValue(DataGenerator.Generate.generateNewApp("ru").getName());
+            phoneNumber.setValue(DataGenerator.Generate.generateNewApp("ru").getPhone());
+            agreementField.click();
+            planButton.click();
+            $(withText("Неверно введена дата")).waitUntil(visible, 5000);
+        }
 
-    @Test
-    void shouldNotConfirmWrongDateRequestV2() {
-        cityField.setValue(DataGenerator.generateNewApp().getCity());
-        dateField.doubleClick().sendKeys(BACK_SPACE);
-        dateField.setValue("16.16.2220");
-        personName.setValue(DataGenerator.generateNewApp().getName());
-        phoneNumber.setValue(DataGenerator.generateNewApp().getPhone());
-        agreementField.click();
-        planButton.click();
-        $(withText("Неверно введена дата")).waitUntil(visible, 5000);
-    }
+        @Test
+        void shouldNotConfirmWrongDateRequestV2 () {
+            cityField.setValue(DataGenerator.Generate.generateCity());
+            dateField.doubleClick().sendKeys(BACK_SPACE);
+            dateField.setValue(DataGenerator.Generate.generateInvalidDate());
+            personName.setValue(DataGenerator.Generate.generateNewApp("ru").getName());
+            phoneNumber.setValue(DataGenerator.Generate.generateNewApp("ru").getPhone());
+            agreementField.click();
+            planButton.click();
+            $(withText("Неверно введена дата")).waitUntil(visible, 5000);
+        }
+
 }

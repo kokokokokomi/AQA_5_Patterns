@@ -7,13 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class AppRegistration {
-    private String city;
-    private String name;
-    private String phone;
+    private final String name;
+    private final String phone;
 
-    public AppRegistration(String city, String name, String phone) {
-        this.city = city;
-        this.name = name;
-        this.phone = phone;
-    }
 }
