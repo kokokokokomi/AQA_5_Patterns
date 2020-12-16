@@ -21,8 +21,7 @@ public class DataGenerator {
 
         public static AppRegistration generateNewApp(String locale) {
             Faker faker = new Faker(new Locale("ru"));
-            return new AppRegistration(faker.name().lastName() + " " + faker.name().firstName(),
-                    faker.numerify("+7##########"));
+            return new AppRegistration(generateCity(),faker.name().lastName() + " " + faker.name().firstName(), faker.numerify("+7##########"));
         }
 
         public static String generateCity() {
