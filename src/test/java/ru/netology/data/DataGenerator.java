@@ -71,5 +71,10 @@ public class DataGenerator {
             return invalidDate;
         }
 
+        public static String generateInvalidPhoneNumber() {
+            String invalidPhoneNumber = "+042222222";
+            return invalidPhoneNumber;
+        }
+
     }
 }

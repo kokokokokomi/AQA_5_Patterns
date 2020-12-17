@@ -25,7 +25,6 @@ public class AppCardDeliveryTest {
     private SelenideElement replanButton = $$("button").find(exactText("Перепланировать"));
     private SelenideElement successMessage = $(withText("Успешно!"));
     private SelenideElement successNotificationContent = $("[data-test-id=success-notification] .notification__content");
-    AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
 
     @BeforeEach
     void shouldOpenBrowser() {
@@ -34,6 +33,7 @@ public class AppCardDeliveryTest {
 
     @Test
     void shouldConfirmReplanRequest() {
+        AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
         cityField.setValue(userData.getCity());
         dateField.doubleClick().sendKeys(BACK_SPACE);
         dateField.setValue(DataGenerator.Generate.generateCardDeliveryDate());
@@ -53,6 +53,7 @@ public class AppCardDeliveryTest {
 
     @Test
     void shouldConfirmSpecialNameRequest () {
+        AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
         cityField.setValue(userData.getCity());
         dateField.click();
         dateField.setValue(DataGenerator.Generate.generateCardDeliveryDate());
@@ -66,6 +67,7 @@ public class AppCardDeliveryTest {
 
     @Test
     void shouldNotConfirmWrongNameRequest () {
+        AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
         cityField.setValue(userData.getCity());
         personName.setValue(DataGenerator.Generate.generateInvalidName());
         phoneNumber.setValue(userData.getPhone());
@@ -76,6 +78,7 @@ public class AppCardDeliveryTest {
 
     @Test
     void shouldNotConfirmRequest () {
+        AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
         personName.setValue(userData.getName());
         phoneNumber.setValue(userData.getPhone());
         agreementField.click();
@@ -85,6 +88,7 @@ public class AppCardDeliveryTest {
 
     @Test
     void shouldNotConfirmWrongDataRequest () {
+        AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
         cityField.setValue(DataGenerator.Generate.generateInvalidCity());
         personName.setValue(userData.getName());
         phoneNumber.setValue(userData.getPhone());
@@ -93,28 +97,43 @@ public class AppCardDeliveryTest {
         $(byText("Доставка в выбранный город недоступна")).waitUntil(visible, 5000);
     }
 
-        @Test
-        void shouldNotConfirmWrongDateRequest () {
-            cityField.setValue(userData.getCity());
-            dateField.doubleClick().sendKeys(BACK_SPACE);
-            dateField.setValue(DataGenerator.Generate.generateSpecialCardDeliveryDate());
-            personName.setValue(userData.getName());
-            phoneNumber.setValue(userData.getPhone());
-            agreementField.click();
-            planButton.click();
-            $(withText("Неверно введена дата")).waitUntil(visible, 5000);
-        }
+    @Test
+    void shouldNotConfirmWrongDateRequest () {
+        AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
+        cityField.setValue(userData.getCity());
+        dateField.doubleClick().sendKeys(BACK_SPACE);
+        dateField.setValue(DataGenerator.Generate.generateSpecialCardDeliveryDate());
+        personName.setValue(userData.getName());
+        phoneNumber.setValue(userData.getPhone());
+        agreementField.click();
+        planButton.click();
+        $(withText("Неверно введена дата")).waitUntil(visible, 5000);
+    }
 
-        @Test
-        void shouldNotConfirmWrongDateRequestV2 () {
-            cityField.setValue(userData.getCity());
-            dateField.doubleClick().sendKeys(BACK_SPACE);
-            dateField.setValue(DataGenerator.Generate.generateInvalidDate());
-            personName.setValue(userData.getName());
-            phoneNumber.setValue(userData.getPhone());
-            agreementField.click();
-            planButton.click();
-            $(withText("Неверно введена дата")).waitUntil(visible, 5000);
-        }
+    @Test
+    void shouldNotConfirmWrongDateRequestV2 () {
+        AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
+        cityField.setValue(userData.getCity());
+        dateField.doubleClick().sendKeys(BACK_SPACE);
+        dateField.setValue(DataGenerator.Generate.generateInvalidDate());
+        personName.setValue(userData.getName());
+        phoneNumber.setValue(userData.getPhone());
+        agreementField.click();
+        planButton.click();
+        $(withText("Неверно введена дата")).waitUntil(visible, 5000);
+    }
+
+    @Test
+    void shouldNotConfirmWrongPhoneNumberRequest () {
+        AppRegistration userData = DataGenerator.Generate.generateNewApp("ru");
+        cityField.setValue(userData.getCity());
+        dateField.click();
+        dateField.setValue(DataGenerator.Generate.generateCardDeliveryDate());
+        personName.setValue(userData.getName());
+        phoneNumber.setValue(DataGenerator.Generate.generateInvalidPhoneNumber());
+        agreementField.click();
+        planButton.click();
+        $(withText("Номер телефона указан неверно")).waitUntil(visible, 5000); //В форме не предусмотрена фраза для этого сценария
+    }
 
 }
